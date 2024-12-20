@@ -232,10 +232,10 @@ app.get('/api/getsession2', (req, res) => {
 });
 // DOC API
 app.get('/docs', (req, res) => {
-    res.redirect('https://nothing-api-4n7g.onrender.com');
+    res.redirect('https://https://nothing-endpoint-e82e9f07ad78.herokuapp.com/');
 });
 app.get('/doc', (req, res) => {
-    res.redirect('https://nothing-api-4n7g.onrender.com');
+    res.redirect('https://https://nothing-endpoint-e82e9f07ad78.herokuapp.com');
 });
 // مسیر برای دریافت تمام API keyها
 app.get('/api/checkallapikey/check', (req, res) => {
