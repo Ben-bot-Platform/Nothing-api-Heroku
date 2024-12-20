@@ -11,8 +11,6 @@
       "url": "heroku/nodejs"
     }
   ],
-  "scripts": {
-    "postdeploy": "npm run migrate"
-  },
+  "scripts": {},
   "addons": []
 }
