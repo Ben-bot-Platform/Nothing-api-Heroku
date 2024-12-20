@@ -127,6 +127,81 @@
     background-color: #ffd700; /* رنگ زرد */
 }
 
+.announcement {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            color: #333;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            animation: fall 1.5s ease-in-out forwards;
+            width: 80%;
+        }
+
+        .announcement .title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .announcement .icon {
+            font-size: 6rem;
+            color: #4caf50;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 255, 0, 0.7), 0 0 5px rgba(0, 255, 0, 0.7);
+            transform: rotate(45deg); /* چرخش علامت */
+        }
+
+        .announcement p {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        .announcement button {
+            background-color: #ff5722;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .announcement button:hover {
+            background-color: #e91e63;
+        }
+
+        .announcement a {
+            color: #ff5722;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .announcement a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -100px;
+                transform: translateX(-50%) rotateX(180deg);
+            }
+            50% {
+                top: 50%;
+                transform: translateX(-50%) rotateX(90deg);
+            }
+            100% {
+                top: 30%;
+                transform: translateX(-50%) rotateX(0deg);
+            }
+        }
+        
 /* استایل برای عنوان‌ها */
 .api-section-title {
     font-size: 1.5rem;
@@ -182,7 +257,23 @@
     </style>
 </head>
 <body>
-    <header>NOTHING API | ENDPOINT</header>
+    <!-- اعلامیه -->
+    <div class="announcement" id="announcement">
+        <p class="icon">✓</p>
+        <p class="title">NOTHING REST APIS</p>
+        <p>Welcome to NOTHING APIS. <a href="mailto:admin@example.com">Contact admin</a> for premium API key.</p>
+        <button onclick="closeAnnouncement()">GOT IT</button>
+    </div>
+    
+    <header>NOTHING APIS</header>
+    
+    <script>
+        // تابع برای پنهان کردن اعلامیه
+        function closeAnnouncement() {
+            const announcement = document.getElementById('announcement');
+            announcement.style.display = 'none';
+        }
+    </script>
 
     <!-- منو -->
 <div class="menu" id="menu">
