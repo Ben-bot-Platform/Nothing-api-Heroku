@@ -6,18 +6,24 @@
     <title>NOTHING API | ENDPOINT</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: white;
-    overflow: auto; /* تغییر به auto برای اجازه اسکرول */
-    height: 100vh; /* اطمینان از اینکه ارتفاع کل صفحه درست تنظیم شده است */
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+            overflow: auto;
+            height: auto;
+        }
 
-
+        /* استایل برای ویدیو */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ویدیو را در کل صفحه تنظیم می‌کند */
+            z-index: -1; /* ویدیو را در پشت سایر عناصر قرار می‌دهد */
+        }
 
         header {
             background: rgba(30, 30, 30, 0.8);
@@ -25,9 +31,36 @@
             text-align: center;
             font-size: 1.5rem;
             font-weight: bold;
-            color: #ffd700; /* زرد طلایی */
+            color: #ffd700;
             backdrop-filter: blur(5px);
+            position: relative; /* برای نمایش روی ویدیو */
+            z-index: 1; /* بالاتر از ویدیو نمایش داده شود */
         }
+        
+        p {
+            color: white;
+            margin-left: 40px;
+            font-weight: bold;
+          }
+          
+        h1 {
+            text-align: center;
+            color: yellow;
+            font-weight: bold;
+        }
+    
+        h3 {
+            color: yellow;
+            margin-left: 40px;
+            font-weight: bold;
+          }
+          h4 {
+            color: white;
+            font-size: 22px;
+            margin-top: 70px;
+            margin-left: 65px;
+            font-weight: bold;
+          }
 
         .container {
     padding: 10px;
@@ -156,6 +189,34 @@
             transform: rotate(45deg); /* چرخش علامت */
         }
 
+.card {
+            background-color: #075e54;
+            padding: 20px;
+            margin-top: 20px;
+            margin: 0, 25px;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+.video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+.try-button {
+            background-color: #6f42c1;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
         .announcement p {
             margin: 0;
             padding-bottom: 10px;
@@ -221,6 +282,12 @@
     right: 20px;
 }
 
+.status-inactive {
+            color: #dc3545;
+        }
+.status-active {
+            color: #28a745;
+        }
 /* وقتی منو باز است */
 .menu.open {
     left: 0;
@@ -257,11 +324,15 @@
     </style>
 </head>
 <body>
+	<video class="video-bg" autoplay muted loop>
+        <source src="https://files.giftedtech.my.id/file/gifted-api.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <!-- اعلامیه -->
     <div class="announcement" id="announcement">
         <p class="icon">✓</p>
         <p class="title">NOTHING REST APIS</p>
-        <p>Welcome to NOTHING APIS. <a href="mailto:admin@example.com">Contact admin</a> for premium API key.</p>
+        <p>Welcome to NOTHING APIS. <a href="https://wa.me/+93744215959">Contact admin</a> for premium API key.</p>
         <button onclick="closeAnnouncement()">GOT IT</button>
     </div>
     
@@ -298,17 +369,26 @@
     <!-- محتوا -->
 <div class="container" id="content">
     <!-- پیام جدید بالای IP -->
-    <div class="info" id="apiMessage">
-        <p style="font-size: 1.5rem; font-weight: bold; color: #00FF00;">
-            This is the best API! If you don't have an API key, click on "Contact a Nothing" in the menu to get in touch with me. It's free!</span>
-        </p>
-    </div>
-    
-    <div class="info" id="ip">YOUR IP ADDRESS:<br> Loading...</div>
-    <div class="info" id="time">TIME NOW: Loading...</div>
-    <div class="info" id="date">TODAY'S DATE: Loading...</div>
-    <div class="info" id="runtime">SERVER RUNTIME: Loading...</div>
-    <div class="info" id="battery">YOUR BATTERY: Loading...</div>
+    <div class="card">
+                <h3>YOUR IP ADDRESS</h3>
+                <p id="ip">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>YOUR BATTERY</h3>
+                <p id="battery">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>SERVER RUNTIME</h3>
+                <p id="runtime">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>TODAY'S DATE</h3>
+                <p id="date">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>TIME NOW</h3>
+                <p id="time">Loading...</p>
+            </div>
 </div>
 
 <footer style="text-align: center; margin-top: 20px; font-size: 16px;">
@@ -344,46 +424,46 @@
                     <tr>
                         <td>Api Key Checker</td>
                         <td>apikey</td>
-                        <td class="statusa">Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')">CHECK</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')" class="try-button">CHECK</a>
                         </td>
                     </tr>
                     <tr>
                         <td>YouTube ytmp3</td>
                         <td>Url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytmp3?url=https://youtube.com/watch?v=jA3XkD8k8-A&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytmp3?url=https://youtube.com/watch?v=jA3XkD8k8-A&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>YouTube ytmp4</td>
                         <td>Url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytmp4?url=https://youtube.com/watch?v=jA3XkD8k8-A&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytmp4?url=https://youtube.com/watch?v=jA3XkD8k8-A&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Facebook</td>
                         <td>Url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/fbdl?url=https://www.facebook.com/reel/1182784656117330?mibextid=rS40aB7S9Ucbxw6v&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/fbdl?url=https://www.facebook.com/reel/1182784656117330?mibextid=rS40aB7S9Ucbxw6v&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Instagram</td>
                         <td>Url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ingdl?url=https://www.instagram.com/p/CyIqjWusPec/?igsh=N2RqamN3cHR2eG4z&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ingdl?url=https://www.instagram.com/p/CyIqjWusPec/?igsh=N2RqamN3cHR2eG4z&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                 </table>
@@ -405,10 +485,10 @@
                     <tr>
                         <td>Api Key Checker</td>
                         <td>apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')">CHECK</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')" class="try-button">CHECK</a>
                         </td>
                     </tr>
                 </table>
@@ -430,55 +510,55 @@
                     <tr>
                         <td>Api Key Checker</td>
                         <td>apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey==APIKEY')">CHECK</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey==APIKEY')" class="try-button">CHECK</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Create Qr</td>
                         <td>text/url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>BUFFER</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/qrcode?text=Hello&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/qrcode?text=Hello&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Fancy Text</td>
                         <td>text & apikey</td>
-                        <td>Active</td>
+                        <td class="status-inactive">Inactive</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/font-txt?text=Hello&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/font-txt?text=Hello&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Full Ssweb</td>
                         <td>url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-inactive">Inactive</td>
                         <td>BUFFER</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/ssweb?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/ssweb?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Tinyurl</td>
                         <td>url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/tinyurl?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/tinyurl?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Shorturl</td>
                         <td>url & apikey</td>
-                        <td>Active</td>
+                        <td class="status-inactive">Inactive</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/shorturl?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/tools/shorturl?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                 </table>
@@ -500,19 +580,19 @@
                     <tr>
                         <td>Api Key Checker</td>
                         <td>apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')">CHECK</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/checker?apikey=APIKEY')" class="try-button">CHECK</a>
                         </td>
                     </tr>
                     <tr>
                         <td>YouTube search</td>
                         <td>text & apikey</td>
-                        <td>Active</td>
+                        <td class="status-active">Active</td>
                         <td>GET</td>
                         <td>
-                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytsearch?text=Radhe title stark&apikey=APIKEY')">TEST</a>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('https://nothing-endpoint-e82e9f07ad78.herokuapp.com/api/downloader/ytsearch?text=Radhe title stark&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
                 </table>
