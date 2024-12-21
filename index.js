@@ -4,8 +4,8 @@ const gifted = require('gifted-dls');
 const axios = require('axios');
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
-const figlet = require('figlet');  // برای استفاده از فونت‌های مختلف
-const puppeteer = require('puppeteer');
+const figlet = require('figlet');
+const { chromium } = require('playwright');
 const fg = require('api-dylux'); //
 const fs = require('fs');
 const path = require('path');
@@ -950,7 +950,7 @@ app.listen(3000, () => {
 //SSWEB MAKER
 app.get('/api/tools/ssweb', async (req, res) => {
     const apikey = req.query.apikey; // دریافت کلید API
-    const url = req.query.url; // آدرس وب‌سایت برای اسکرین‌شات
+    const url = req.query.url; // لینک وب‌سایت برای گرفتن اسکرین‌شات
 
     if (!apikey || !apiKeys[apikey]) {
         return res.status(401).json({
@@ -978,17 +978,15 @@ app.get('/api/tools/ssweb', async (req, res) => {
     saveApiKeys(apiKeys);
 
     try {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url, { waitUntil: 'networkidle2' });
+        const browser = await chromium.launch(); // راه‌اندازی مرورگر
+        const page = await browser.newPage(); // ایجاد تب جدید
+        await page.goto(url, { waitUntil: 'networkidle' }); // باز کردن صفحه وب
 
-        // گرفتن اسکرین‌شات
-        const screenshot = await page.screenshot();
-        await browser.close();
+        const screenshot = await page.screenshot({ fullPage: true }); // گرفتن اسکرین‌شات
+        await browser.close(); // بستن مرورگر
 
-        // ارسال تصویر
         res.setHeader('Content-Type', 'image/png');
-        res.send(screenshot);
+        res.send(screenshot); // ارسال تصویر
     } catch (err) {
         res.status(500).json({
             status: false,
