@@ -5,6 +5,7 @@ const axios = require('axios');
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 const figlet = require('figlet');  // برای استفاده از فونت‌های مختلف
+const puppeteer = require('puppeteer');
 const fg = require('api-dylux'); //
 const fs = require('fs');
 const path = require('path');
@@ -945,6 +946,56 @@ app.get('/api/tools/font-txt', (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
+});
+//SSWEB MAKER
+app.get('/api/tools/ssweb', async (req, res) => {
+    const apikey = req.query.apikey; // دریافت کلید API
+    const url = req.query.url; // آدرس وب‌سایت برای اسکرین‌شات
+
+    if (!apikey || !apiKeys[apikey]) {
+        return res.status(401).json({
+            status: false,
+            result: 'Invalid or missing API key.'
+        });
+    }
+
+    const keyData = checkUserLimit(apikey);
+    if (keyData.used >= keyData.limit) {
+        return res.status(403).json({
+            status: false,
+            result: 'API key usage limit exceeded.'
+        });
+    }
+
+    if (!url) {
+        return res.status(400).json({
+            status: false,
+            result: 'No URL provided.'
+        });
+    }
+
+    keyData.used += 1;
+    saveApiKeys(apiKeys);
+
+    try {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url, { waitUntil: 'networkidle2' });
+
+        // گرفتن اسکرین‌شات
+        const screenshot = await page.screenshot();
+        await browser.close();
+
+        // ارسال تصویر
+        res.setHeader('Content-Type', 'image/png');
+        res.send(screenshot);
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: 'Error taking screenshot.',
+            error: err.message
+        });
+    }
 });
 //QR CODE MAKER
 app.get('/api/tools/qrcode', async (req, res) => {
