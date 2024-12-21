@@ -340,6 +340,37 @@ app.get('/api/downloader/yt', async (req, res) => {
         });
     }
 });
+//YT TEST
+app.get('/api/download/ytvideo', async (req, res) => {
+    const videoUrl = req.query.url;
+
+    // بررسی وجود URL
+    if (!videoUrl || !ytdl.validateURL(videoUrl)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid or missing YouTube URL.',
+        });
+    }
+
+    try {
+        // استخراج اطلاعات ویدیو
+        const videoInfo = await ytdl.getInfo(videoUrl);
+        const format = ytdl.chooseFormat(videoInfo.formats, { quality: 'highestvideo' });
+
+        res.json({
+            success: true,
+            title: videoInfo.videoDetails.title,
+            thumbnail: videoInfo.videoDetails.thumbnails.pop()?.url,
+            download_url: format.url,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: 'Error processing the request.',
+            error: err.message,
+        });
+    }
+});
 //FBDL
 app.get('/api/downloader/fbdl', async (req, res) => {
     const apikey = req.query.apikey; // دریافت کلید API از درخواست
