@@ -234,6 +234,9 @@ app.get('/api/getsession2', (req, res) => {
 app.get('/docs', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs.html'));
 });
+app.get('/contact', (req, res) => {
+    res.sendFile(path.join(__dirname, 'contact.html'));
+});
 app.get('/doc', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs.html'));
 });

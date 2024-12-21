@@ -83,10 +83,11 @@
 
         // نمایش پیام‌ها
         const messages = [
-            "Fetching data from API...",
-            "Loading user details...",
-            "Almost done...",
-            "Redirection will happen soon!"
+            "Fetching API Data...",
+            "Connecting to Nothing APIs...",
+            "Loading APIS Endpoint...",
+            "Loading to connect APIS Endpoint!",
+            "Complete!"
         ];
         const messagesContainer = document.getElementById('messages');
         messages.forEach((msg, index) => {
@@ -96,12 +97,12 @@
                 message.className = 'message';
                 message.style.animationDelay = `${index * 2}s`;
                 messagesContainer.appendChild(message);
-            }, index * 2000);
+            }, index * 2500);
         });
 
         // انتقال به URL مقصد
         setTimeout(() => {
-            window.location.href = 'https://nothing-endpoint-e82e9f07ad78.herokuapp.com/docs';
+            window.location.href = '../docs';
         }, 15000);
     </script>
 </body>
