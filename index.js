@@ -217,7 +217,123 @@ app.get('/api/apikeychange/reset', (req, res) => {
         apikey
     }));
 });
+//TEMP MAIL
+// متغیر برای ذخیره ایمیل‌های ایجاد شده
+const tempEmails = [];
+app.get('/api/tools/tempmail', async (req, res) => {
+    const apikey = req.query.apikey; // دریافت API Key از درخواست
 
+    // بررسی وجود API Key در لیست
+    if (!apikey || !apiKeys[apikey]) {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid or missing API key.',
+        });
+    }
+
+    const keyData = checkUserLimit(apikey); // بررسی محدودیت‌های کاربر
+
+    // بررسی استفاده از محدودیت
+    if (keyData.used >= keyData.limit) {
+        return res.status(403).json({
+            success: false,
+            message: 'API key usage limit exceeded.',
+        });
+    }
+
+    // افزایش مقدار `used` برای کلید و ذخیره‌سازی
+    keyData.used += 1;
+    saveApiKeys(apiKeys);
+
+    try {
+        // تولید ایمیل
+        const response = await axios.get('https://www.1secmail.com/api/v1/?action=genRandomMailbox');
+        const email = response.data[0];
+        
+        // ذخیره ایمیل در متغیر
+        tempEmails.push(email);
+
+        // بازگشت ایمیل تولید شده
+        res.json({
+            status: true,
+            creator: 'Nothing-Ben',
+            apikey: apikey, // بازگشت API Key برای تایید
+            result: email,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error creating temporary email.',
+            error: error.message,
+        });
+    }
+});
+// مسیر برای بررسی Inbox ایمیل
+app.get('/api/tools/tempmail', async (req, res) => {
+    const apikey = req.query.apikey; // دریافت API Key از درخواست
+    const email = req.query.inbox;  // ایمیل موردنظر برای بررسی
+
+    // بررسی وجود API Key
+    if (!apikey || !apiKeys[apikey]) {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid or missing API key.',
+        });
+    }
+
+    const keyData = checkUserLimit(apikey); // بررسی محدودیت‌های کاربر
+
+    // بررسی استفاده از محدودیت
+    if (keyData.used >= keyData.limit) {
+        return res.status(403).json({
+            success: false,
+            message: 'API key usage limit exceeded.',
+        });
+    }
+
+    // بررسی وجود ایمیل
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: 'Inbox email is required.',
+        });
+    }
+
+    // بررسی اینکه آیا ایمیل قبلاً ایجاد شده است
+    if (!tempEmails.includes(email)) {
+        return res.status(404).json({
+            success: false,
+            message: 'Email not found. Make sure to create it first.',
+        });
+    }
+
+    // افزایش مقدار `used` برای کلید و ذخیره‌سازی
+    keyData.used += 1;
+    saveApiKeys(apiKeys);
+
+    try {
+        const [login, domain] = email.split('@');
+
+        // دریافت پیام‌های Inbox
+        const response = await axios.get(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
+        const messages = response.data;
+
+        // بازگشت پیام‌های Inbox
+        res.json({
+            status: true,
+            creator: 'Nothing-Ben',
+            apikey: apikey, // بازگشت API Key برای تایید
+            email: email,
+            inbox: messages.length > 0 ? messages : 'Inbox is empty.',
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error checking inbox.',
+            error: error.message,
+        });
+    }
+});
 // دانلود فایل apikeyall.json
 app.get('/api/getsession2', (req, res) => {
     const filePath = path.join(__dirname, 'apikeyall.json'); // تعیین مسیر فایل
