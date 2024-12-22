@@ -642,6 +642,28 @@ header22 {
                             <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('../api/tools/shorturl?url=https://nothing-endpoint-e82e9f07ad78.herokuapp.com&apikey=APIKEY')" class="try-button">TEST</a>
                         </td>
                     </tr>
+                    </tr>
+                    <tr>
+                        <td>Tempmail</td>
+                        <td>apikey</td>
+                        <td class="status-active">Inactive</td>
+                        <td>GET</td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="requestApiKeyAndOpenLink('../api/tools/tempmail?apikey=APIKEY')" class="try-button">TEST</a>
+                        </td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td>Tempmail Inbox</td>
+                        <td>apikey & inbox</td>
+                        <td class="status-active">Inactive</td>
+                        <td>GET</td>
+                        <td>
+                            <a href="javascript:void(0)" 
+                               onclick="requestApiKeyAndInboxAndOpenLink('../api/tools/tempmail?apikey=APIKEY&inbox=INBOX')" 
+                               class="try-button">TEST</a>
+                        </td>
+                    </tr>
                 </table>
             </div>
         `;
@@ -682,6 +704,23 @@ header22 {
     }
 }
 
+        
+        function requestApiKeyAndInboxAndOpenLink(apiUrl) {
+    const apikey = prompt("Enter your API key:"); // دریافت API Key از کاربر
+    const inbox = prompt("Enter the email to check inbox:"); // دریافت ایمیل (inbox) از کاربر
+
+    if (!apikey || !inbox) {
+        alert("Both API key and email (inbox) are required.");
+        return;
+    }
+
+    // جایگزینی پارامترهای API Key و ایمیل در URL
+    const urlWithParams = apiUrl.replace("APIKEY", apikey).replace("INBOX", inbox);
+
+    // باز کردن لینک در یک تب جدید
+    window.open(urlWithParams, "_blank");
+    }
+        
         function requestApiKeyAndOpenLink(apiUrl) {
             const apiKey = prompt("Please enter your API Key:");
             if (!apiKey) {

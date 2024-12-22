@@ -226,7 +226,7 @@ app.get('/api/tools/tempmail', async (req, res) => {
     // بررسی وجود API Key در لیست
     if (!apikey || !apiKeys[apikey]) {
         return res.status(401).json({
-            success: false,
+            status: false,
             message: 'Invalid or missing API key.',
         });
     }
@@ -236,7 +236,7 @@ app.get('/api/tools/tempmail', async (req, res) => {
     // بررسی استفاده از محدودیت
     if (keyData.used >= keyData.limit) {
         return res.status(403).json({
-            success: false,
+            status: false,
             message: 'API key usage limit exceeded.',
         });
     }
@@ -254,29 +254,35 @@ app.get('/api/tools/tempmail', async (req, res) => {
         tempEmails.push(email);
 
         // بازگشت ایمیل تولید شده
-        res.json({
+        const result = {
+            type: 'email',
+            apikey: apikey,
+            email: email,
+        };
+
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
             status: true,
             creator: 'Nothing-Ben',
-            apikey: apikey, // بازگشت API Key برای تایید
-            result: email,
-        });
+            result: result,
+        }, null, 4)); // مرتب کردن JSON با فاصله 4
     } catch (error) {
         res.status(500).json({
-            success: false,
+            status: false,
             message: 'Error creating temporary email.',
             error: error.message,
         });
     }
 });
 // مسیر برای بررسی Inbox ایمیل
-app.get('/api/tools/tempmail', async (req, res) => {
+app.get('/api/tools/tempmail-inbox', async (req, res) => {
     const apikey = req.query.apikey; // دریافت API Key از درخواست
     const email = req.query.inbox;  // ایمیل موردنظر برای بررسی
 
     // بررسی وجود API Key
     if (!apikey || !apiKeys[apikey]) {
         return res.status(401).json({
-            success: false,
+            status: false,
             message: 'Invalid or missing API key.',
         });
     }
@@ -286,7 +292,7 @@ app.get('/api/tools/tempmail', async (req, res) => {
     // بررسی استفاده از محدودیت
     if (keyData.used >= keyData.limit) {
         return res.status(403).json({
-            success: false,
+            status: false,
             message: 'API key usage limit exceeded.',
         });
     }
@@ -294,7 +300,7 @@ app.get('/api/tools/tempmail', async (req, res) => {
     // بررسی وجود ایمیل
     if (!email) {
         return res.status(400).json({
-            success: false,
+            status: false,
             message: 'Inbox email is required.',
         });
     }
@@ -302,7 +308,7 @@ app.get('/api/tools/tempmail', async (req, res) => {
     // بررسی اینکه آیا ایمیل قبلاً ایجاد شده است
     if (!tempEmails.includes(email)) {
         return res.status(404).json({
-            success: false,
+            status: false,
             message: 'Email not found. Make sure to create it first.',
         });
     }
@@ -318,17 +324,23 @@ app.get('/api/tools/tempmail', async (req, res) => {
         const response = await axios.get(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
         const messages = response.data;
 
-        // بازگشت پیام‌های Inbox
-        res.json({
+        // ساختار پاسخ
+        const result = {
+            type: 'inbox',
+            apikey: apikey,
+            email: email,
+            messages: messages.length > 0 ? messages : 'Inbox is empty.',
+        };
+
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
             status: true,
             creator: 'Nothing-Ben',
-            apikey: apikey, // بازگشت API Key برای تایید
-            email: email,
-            inbox: messages.length > 0 ? messages : 'Inbox is empty.',
-        });
+            result: result,
+        }, null, 4)); // مرتب کردن JSON با فاصله 4
     } catch (error) {
         res.status(500).json({
-            success: false,
+            status: false,
             message: 'Error checking inbox.',
             error: error.message,
         });
