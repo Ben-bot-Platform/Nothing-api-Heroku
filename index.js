@@ -13,6 +13,8 @@ const app = express();
 const port = process.env.PORT || 8080;
 const timeLimit = 7 * 24 * 60 * 60 * 1000; // مدت زمان یک هفته (میلی‌ثانیه)
 const apiKeyFile = path.join(__dirname, 'apikeyall.json'); // مسیر فایل کلیدها
+const { MailTm } = require('mailtm');
+const bodyParser = require('body-parser');
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -230,6 +232,66 @@ app.get('/api/getsession2', (req, res) => {
             }));
         }
     });
+});
+//TEMP MAIL
+app.use(bodyParser.json());
+const tempEmails = {}; // ذخیره ایمیل‌های موقت و session آنها
+// مسیر ایجاد ایمیل موقت
+app.get('/api/tools/tempmail', async (req, res) => {
+    try {
+        const domain = (await MailTm.getDomains())[0].domain; // انتخاب اولین دامنه موجود
+        const email = `user${Date.now()}@${domain}`; // تولید ایمیل یکتا
+        const client = new MailTm(email); // ایجاد کلاینت برای مدیریت ایمیل
+        const password = `pass${Date.now()}`; // رمز عبور موقت
+
+        await client.register(password); // ثبت ایمیل در سرویس MailTm
+
+        // ذخیره ایمیل و session
+        tempEmails[email] = client;
+
+        res.json({
+            status: true,
+            email,
+            message: 'Temporary email created successfully.',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Error creating temporary email.',
+            error: error.message,
+        });
+    }
+});
+
+// مسیر مشاهده inbox ایمیل
+app.get('/api/tools/tempmail', async (req, res) => {
+    const emailId = req.query.inbox; // دریافت آدرس ایمیل از پارامتر
+    if (!emailId || !tempEmails[emailId]) {
+        return res.status(404).json({
+            status: false,
+            message: 'Email not found.',
+        });
+    }
+
+    try {
+        const client = tempEmails[emailId];
+        const messages = await client.getMessages(); // دریافت پیام‌های inbox
+        res.json({
+            status: true,
+            inbox: messages.map((msg) => ({
+                from: msg.from,
+                subject: msg.subject,
+                body: msg.intro,
+                date: msg.createdAt,
+            })),
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Error retrieving inbox.',
+            error: error.message,
+        });
+    }
 });
 // DOC API
 app.get('/docs', (req, res) => {
